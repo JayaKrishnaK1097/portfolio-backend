@@ -3,6 +3,7 @@ package com.jayakrishnakalavakuri.portfolio.service;
 // Imports
 import com.jayakrishnakalavakuri.portfolio.model.Project;
 import com.jayakrishnakalavakuri.portfolio.repository.ProjectRepository;
+import com.jayakrishnakalavakuri.portfolio.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class ProjectService {
 
     public Project getProjectById(Long id){
         return projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
     }
 
     public Project createProject(Project project){
