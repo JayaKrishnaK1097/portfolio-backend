@@ -7,23 +7,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "skills")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project {
+public class Skill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String title;
+    private String name;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Enumerated(EnumType.STRING)
+    private CategoryOption category;
 
-    private String techStack;
-    private String githubUrl;
-    private String liveUrl;
+    @Enumerated(EnumType.STRING)
+    private ProficiencyLevel proficiency;
 }

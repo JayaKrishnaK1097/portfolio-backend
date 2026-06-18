@@ -4,10 +4,12 @@ package com.jayakrishnakalavakuri.portfolio.service;
 import com.jayakrishnakalavakuri.portfolio.model.Project;
 import com.jayakrishnakalavakuri.portfolio.repository.ProjectRepository;
 import com.jayakrishnakalavakuri.portfolio.exception.ResourceNotFoundException;
+import com.jayakrishnakalavakuri.portfolio.dto.ProjectDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -15,32 +17,63 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
 
-    public List<Project> getAllProjects(){
-        return projectRepository.findAll();
+    public List<ProjectDTO> getAllProjects() {
+        return projectRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public Project getProjectById(Long id){
-        return projectRepository.findById(id)
+    public ProjectDTO getProjectById(Long id) {
+        Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+        return convertToDTO(project);
     }
 
-    public Project createProject(Project project){
-        return projectRepository.save(project);
+    public ProjectDTO createProject(ProjectDTO projectDTO) {
+        Project project = convertToEntity(projectDTO);
+        return convertToDTO(projectRepository.save(project));
     }
 
-    public Project updateProject(Long id, Project updatedProject){
-        Project existingProject = getProjectById(id);
+    public ProjectDTO updateProject(Long id, ProjectDTO updatedProjectDTO) {
+        Project existingProject = projectRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
 
-        existingProject.setTitle(updatedProject.getTitle());
-        existingProject.setDescription(updatedProject.getDescription());
-        existingProject.setTechStack(updatedProject.getTechStack());
-        existingProject.setGithubUrl(updatedProject.getGithubUrl());
-        existingProject.setLiveUrl(updatedProject.getLiveUrl());
+        existingProject.setTitle(updatedProjectDTO.getTitle());
+        existingProject.setDescription(updatedProjectDTO.getDescription());
+        existingProject.setTechStack(updatedProjectDTO.getTechStack());
+        existingProject.setGithubUrl(updatedProjectDTO.getGithubUrl());
+        existingProject.setLiveUrl(updatedProjectDTO.getLiveUrl());
 
-        return projectRepository.save(existingProject);
+        return convertToDTO(projectRepository.save(existingProject));
     }
 
-    public void deleteProject(Long id){
+    public void deleteProject(Long id) {
+        projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Project not found with id: " + id));
         projectRepository.deleteById(id);
+    }
+
+    private ProjectDTO convertToDTO(Project project) {
+        return new ProjectDTO(
+                project.getId(),
+                project.getTitle(),
+                project.getDescription(),
+                project.getTechStack(),
+                project.getGithubUrl(),
+                project.getLiveUrl()
+        );
+    }
+
+    private Project convertToEntity(ProjectDTO dto) {
+        return new Project(
+                null,
+                dto.getTitle(),
+                dto.getDescription(),
+                dto.getTechStack(),
+                dto.getGithubUrl(),
+                dto.getLiveUrl()
+        );
     }
 }
