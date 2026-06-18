@@ -62,12 +62,11 @@ public class SkillService {
         );
     }
 
-    private Skill convertToEntity(SkillDTO skillDTO) {
-        return new Skill(
-                null,
-                skillDTO.getName(),
-                skillDTO.getCategory(),
-                skillDTO.getProficiency()
-        );
+    private Skill convertToEntity(SkillDTO dto) {
+        Skill skill = new Skill();
+        skill.setName(dto.getName());
+        skill.setCategory(dto.getCategory());
+        skill.setProficiency(dto.getProficiency());
+        return skill;
     }
 }

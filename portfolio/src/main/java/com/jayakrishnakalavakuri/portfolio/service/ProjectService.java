@@ -67,13 +67,12 @@ public class ProjectService {
     }
 
     private Project convertToEntity(ProjectDTO dto) {
-        return new Project(
-                null,
-                dto.getTitle(),
-                dto.getDescription(),
-                dto.getTechStack(),
-                dto.getGithubUrl(),
-                dto.getLiveUrl()
-        );
+        Project project = new Project();
+        project.setTitle(dto.getTitle());
+        project.setDescription(dto.getDescription());
+        project.setTechStack(dto.getTechStack());
+        project.setGithubUrl(dto.getGithubUrl());
+        project.setLiveUrl(dto.getLiveUrl());
+        return project;
     }
 }

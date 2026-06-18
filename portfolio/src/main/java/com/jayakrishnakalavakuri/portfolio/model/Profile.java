@@ -2,32 +2,38 @@ package com.jayakrishnakalavakuri.portfolio.model;
 
 // Imports
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.ArrayList;
+
 @Entity
-@Table(name = "projects")
+@Table(name = "profiles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project {
+public class Profile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
+    private String fullName;
+
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String techStack;
-    private String githubUrl;
-    private String liveUrl;
+    @Column(nullable = false)
+    private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
+    private String photoURL;
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects = new ArrayList<>();
 }
