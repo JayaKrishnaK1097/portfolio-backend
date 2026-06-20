@@ -32,7 +32,7 @@ public class Profile {
     @Column(nullable = false)
     private String email;
 
-    private String photoURL;
+    private String photoUrl;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();
