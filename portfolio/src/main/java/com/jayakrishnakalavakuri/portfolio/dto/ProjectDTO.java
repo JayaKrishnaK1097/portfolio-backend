@@ -16,4 +16,5 @@ public class ProjectDTO {
     private String techStack;
     private String githubUrl;
     private String liveUrl;
+    private Long profileId;
 }

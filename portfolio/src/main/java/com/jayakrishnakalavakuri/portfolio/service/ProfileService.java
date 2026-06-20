@@ -18,8 +18,8 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
 
     public List<ProfileDTO> getAllProfiles() {
-        return profileRepository.findAll()
-                .stream()
+        List<Profile> profiles = profileRepository.findAll();
+        return profiles.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

@@ -1,6 +1,8 @@
 package com.jayakrishnakalavakuri.portfolio.service;
 
 // Imports
+import com.jayakrishnakalavakuri.portfolio.model.Profile;
+import com.jayakrishnakalavakuri.portfolio.repository.ProfileRepository;
 import com.jayakrishnakalavakuri.portfolio.model.Project;
 import com.jayakrishnakalavakuri.portfolio.repository.ProjectRepository;
 import com.jayakrishnakalavakuri.portfolio.exception.ResourceNotFoundException;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ProfileRepository profileRepository;
 
     public List<ProjectDTO> getAllProjects() {
         return projectRepository.findAll()
@@ -56,14 +59,19 @@ public class ProjectService {
     }
 
     private ProjectDTO convertToDTO(Project project) {
-        return new ProjectDTO(
-                project.getId(),
-                project.getTitle(),
-                project.getDescription(),
-                project.getTechStack(),
-                project.getGithubUrl(),
-                project.getLiveUrl()
-        );
+        ProjectDTO dto = new ProjectDTO();
+        dto.setId(project.getId());
+        dto.setTitle(project.getTitle());
+        dto.setDescription(project.getDescription());
+        dto.setTechStack(project.getTechStack());
+        dto.setGithubUrl(project.getGithubUrl());
+        dto.setLiveUrl(project.getLiveUrl());
+
+        if (project.getProfile() != null) {
+            dto.setProfileId(project.getProfile().getId());
+        }
+
+        return dto;
     }
 
     private Project convertToEntity(ProjectDTO dto) {
@@ -73,6 +81,13 @@ public class ProjectService {
         project.setTechStack(dto.getTechStack());
         project.setGithubUrl(dto.getGithubUrl());
         project.setLiveUrl(dto.getLiveUrl());
+
+        if (dto.getProfileId() != null) {
+            Profile profile = profileRepository.findById(dto.getProfileId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Profile not found by id: " + dto.getProfileId()));
+            project.setProfile(profile);
+        }
+
         return project;
     }
 }
